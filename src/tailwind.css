@@ -1,3 +1,8 @@
+/* Tailwind CSS base styles - resets and normalizes browser styles */
 @tailwind base;
+
+/* Tailwind CSS component classes - reusable UI components */
 @tailwind components;
+
+/* Tailwind CSS utility classes - single-purpose classes for styling elements */
 @tailwind utilities; 

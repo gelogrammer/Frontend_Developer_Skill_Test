@@ -6,12 +6,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
+/**
+ * Task Service - handles all task-related operations
+ * Uses localStorage for data persistence (simulates backend API)
+ * Includes methods for CRUD operations on tasks
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  private localStorageKey = 'tasks';
-  private platformId = inject(PLATFORM_ID);
+  private localStorageKey = 'tasks';  // Key for storing tasks in localStorage
+  private platformId = inject(PLATFORM_ID);  // For platform detection (browser vs server)
   
   constructor() {
     // Only initialize tasks in browser environment
@@ -23,6 +28,10 @@ export class TaskService {
     }
   }
 
+  /**
+   * Creates sample tasks for initial app state
+   * Only called when no tasks exist in localStorage
+   */
   private initializeSampleTasks(): void {
     const sampleTasks: Task[] = [
       {
@@ -54,7 +63,10 @@ export class TaskService {
     localStorage.setItem(this.localStorageKey, JSON.stringify(sampleTasks));
   }
 
-  // Get all tasks
+  /**
+   * Retrieves all tasks from storage
+   * @returns Observable of Task array with simulated API delay
+   */
   getTasks(): Observable<Task[]> {
     try {
       // Return empty array if not in browser
@@ -72,21 +84,31 @@ export class TaskService {
     }
   }
 
-  // Get pending tasks
+  /**
+   * Retrieves only pending tasks
+   * @returns Observable of pending Task array
+   */
   getPendingTasks(): Observable<Task[]> {
     return this.getTasks().pipe(
       tap(tasks => tasks.filter(task => task.status === 'pending'))
     );
   }
 
-  // Get completed tasks
+  /**
+   * Retrieves only completed tasks
+   * @returns Observable of completed Task array
+   */
   getCompletedTasks(): Observable<Task[]> {
     return this.getTasks().pipe(
       tap(tasks => tasks.filter(task => task.status === 'completed'))
     );
   }
 
-  // Get a single task
+  /**
+   * Retrieves a specific task by ID
+   * @param id Task ID to retrieve
+   * @returns Observable of Task if found, error otherwise
+   */
   getTask(id: string): Observable<Task> {
     try {
       // Return null if not in browser
@@ -107,7 +129,11 @@ export class TaskService {
     }
   }
 
-  // Add a new task
+  /**
+   * Creates a new task
+   * @param task Task data without id, dates, and status
+   * @returns Observable of the created Task with generated ID and timestamps
+   */
   addTask(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'status'>): Observable<Task> {
     try {
       // Don't perform operation if not in browser
@@ -141,7 +167,12 @@ export class TaskService {
     }
   }
 
-  // Update a task
+  /**
+   * Updates an existing task
+   * @param id Task ID to update
+   * @param updates Partial Task data to apply
+   * @returns Observable of the updated Task
+   */
   updateTask(id: string, updates: Partial<Omit<Task, 'id' | 'createdAt'>>): Observable<Task> {
     try {
       // Don't perform operation if not in browser
@@ -171,12 +202,20 @@ export class TaskService {
     }
   }
 
-  // Mark task as completed
+  /**
+   * Marks a task as completed
+   * @param id Task ID to mark as completed
+   * @returns Observable of the updated Task
+   */
   markTaskAsCompleted(id: string): Observable<Task> {
     return this.updateTask(id, { status: 'completed' });
   }
 
-  // Delete a task
+  /**
+   * Deletes a task by ID
+   * @param id Task ID to delete
+   * @returns Observable of boolean indicating success
+   */
   deleteTask(id: string): Observable<boolean> {
     try {
       // Don't perform operation if not in browser
