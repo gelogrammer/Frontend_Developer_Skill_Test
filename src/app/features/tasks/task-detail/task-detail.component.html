@@ -1,0 +1,97 @@
+<div class="min-h-screen bg-purple-50">
+  <!-- Header -->
+  <header class="bg-white py-3 px-4 shadow-sm">
+    <div class="flex justify-between items-center max-w-md mx-auto">
+      <div class="flex items-center">
+        <img src="assets/logo2.png" alt="Hexalog Logo" class="h-7">
+      </div>
+      <div class="flex items-center space-x-3">
+        <button
+          (click)="logout()"
+          class="touch-manipulation"
+        >
+          <img src="assets/SignOut.png" alt="Sign Out" class="h-8">
+        </button>
+        <button 
+          (click)="navigateToList()" 
+          class="text-purple-600 border border-purple-200 px-4 py-1 rounded-full text-sm font-medium hover:bg-purple-100 active:bg-purple-200 touch-manipulation"
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-md mx-auto px-4 py-6 pb-20">
+    <!-- Loading indicator -->
+    <div *ngIf="loading$ | async" class="flex justify-center my-6">
+      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-purple-600 motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+    </div>
+
+    <div *ngIf="(task$ | async) as task">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-purple-600">Task Details</h1>
+      </div>
+      
+      <div class="bg-white rounded-lg shadow-sm">
+        <!-- Task Header -->
+        <div class="p-4">
+          <div class="grid grid-cols-3 items-center mb-2">
+            <h2 class="text-lg font-semibold text-gray-800 font-inter font-bold text-3xl capitalize text-center leading-tight tracking-tighter col-span-1" 
+               style="font-family: Inter; font-size: 32px; line-height: 113.99%; letter-spacing: -3%; background: linear-gradient(0deg, #526286, #526286), linear-gradient(269.13deg, #DA68A8 0%, #5556FF 94.4%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; width: 89px; height: 23px;">Task Name</h2>
+            
+            <div class="flex space-x-4 justify-end col-span-2">
+              <button 
+                (click)="navigateToEdit()" 
+                class="text-gray-400"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+              <button 
+                (click)="deleteTask()"
+                class="text-red-500"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Task Description (2 lines) -->
+          <p class="text-green-700 text-sm">Welcome To Your 6 Sided Assistant. Please Login And Start Asking</p>
+          <p class="text-green-700 text-sm">Welcome To Your 6 Sided Assistant. Please Login And Start Asking</p>
+        </div>
+        
+        <!-- Action Button -->
+        <div class="px-4 pb-4" *ngIf="task.status === 'pending'">
+          <button 
+            (click)="markAsCompleted()"
+            class="w-full py-2.5 bg-gray-100 text-green-600 rounded-md flex items-center justify-center space-x-2 touch-manipulation"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Mark As Done</span>
+          </button>
+        </div>
+        
+        <!-- Completed Indicator -->
+        <div class="px-4 pb-4" *ngIf="task.status === 'completed'">
+          <button 
+            disabled
+            class="w-full py-2.5 bg-gray-100 text-green-600 rounded-md flex items-center justify-center space-x-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Completed</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div> 

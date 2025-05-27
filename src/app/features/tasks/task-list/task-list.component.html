@@ -1,0 +1,158 @@
+<div class="min-h-screen bg-purple-50">
+  <!-- Header -->
+  <header class="bg-white py-3 px-4 shadow-sm">
+    <div class="flex justify-between items-center max-w-md mx-auto">
+      <div class="flex items-center">
+        <img src="assets/logo2.png" alt="Hexalog Logo" class="h-7">
+      </div>
+      <button 
+        (click)="logout()" 
+        class="touch-manipulation"
+      >
+        <img src="assets/SignOut.png" alt="Sign Out" class="h-8">
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-md mx-auto px-4 py-6 pb-20">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-[#DA68A8] to-[#5556FF] text-transparent bg-clip-text">Tasks</h1>
+      <button 
+        routerLink="/tasks/new"
+        class="touch-manipulation">
+        <img src="assets/add_button.png" alt="Add Task" class="h-12 w-12">
+      </button>
+    </div>
+
+    <!-- Task List -->
+    <ng-container *ngIf="!(loading$ | async)">
+      <div class="space-y-4">
+        <!-- Task Card -->
+        <ng-container *ngIf="pendingTasks$ | async as pendingTasks">
+          <div *ngFor="let task of pendingTasks" class="bg-white rounded-lg shadow-sm p-4">
+            <!-- Task Header -->
+            <div class="flex justify-between items-center mb-3">
+              <div class="flex items-center">
+                <h3 class="text-xl font-semibold text-gray-800 mr-2">{{ task.title }}</h3>
+                <a 
+                  [routerLink]="['/tasks', task.id, 'edit']" 
+                  class="bg-gray-100 p-2 rounded-lg h-9 w-9 flex items-center justify-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </a>
+              </div>
+              <button 
+                (click)="openDeleteModal(task.id, $event, task.title)"
+                class="bg-gray-100 p-2 rounded-lg h-9 w-9 flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+                  <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </div>
+            
+            <!-- Task Description -->
+            <div class="mb-4">
+              <p class="text-gray-600 text-sm">{{ task.description }}</p>
+            </div>
+            
+            <!-- Mark as Done Button -->
+            <button 
+              (click)="markAsCompleted(task.id, $event, task.title)"
+              class="w-full py-3 bg-gray-50 text-gray-700 rounded-lg border border-[#CBD5E1] flex items-center justify-center space-x-2 touch-manipulation"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>Mark As Done</span>
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="completedTasks$ | async as completedTasks">
+          <div *ngFor="let task of completedTasks" class="bg-white rounded-lg shadow-sm p-4">
+            <!-- Task Header -->
+            <div class="flex justify-between items-center mb-3">
+              <div class="flex items-center">
+                <h3 class="text-xl font-semibold text-gray-800 mr-2">{{ task.title }}</h3>
+                <a 
+                  [routerLink]="['/tasks', task.id, 'edit']" 
+                  class="bg-gray-100 p-2 rounded-lg h-9 w-9 flex items-center justify-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </a>
+              </div>
+              <button 
+                (click)="openDeleteModal(task.id, $event, task.title)"
+                class="bg-gray-100 p-2 rounded-lg h-9 w-9 flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"></path>
+                  <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </div>
+            
+            <!-- Task Description -->
+            <div class="mb-4">
+              <p class="text-gray-600 text-sm">{{ task.description }}</p>
+            </div>
+            
+            <!-- Completed Status -->
+            <div class="w-full py-3 bg-green-50 text-green-700 rounded-lg border border-green-200 flex items-center justify-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>Completed</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Empty State -->
+        <div *ngIf="(pendingTasks$ | async)?.length === 0 && (completedTasks$ | async)?.length === 0" 
+             class="text-center py-10">
+          <p class="text-gray-500">No tasks found. Create your first task!</p>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Loading indicator -->
+    <div *ngIf="loading$ | async" class="flex justify-center my-6">
+      <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-purple-600 motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <app-confirmation-modal
+      [isOpen]="isDeleteModalOpen"
+      title="Delete"
+      [taskName]="currentTaskName"
+      modalType="delete"
+      (confirm)="confirmDelete()"
+      (cancel)="cancelDelete()"
+    ></app-confirmation-modal>
+    
+    <!-- Complete Confirmation Modal -->
+    <app-confirmation-modal
+      [isOpen]="isCompleteModalOpen"
+      title="Mark As Done"
+      [taskName]="currentTaskName"
+      modalType="complete"
+      (confirm)="confirmComplete()"
+      (cancel)="cancelComplete()"
+    ></app-confirmation-modal>
+  </main>
+
+  <!-- Fab Button - Removed -->
+</div> 

@@ -1,0 +1,73 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+  <div class="max-w-md w-full mx-4 p-6 -mt-16">
+    <div class="text-center mb-6">
+      <div class="flex items-center justify-center mb-2">
+        <img src="assets/logo.png" alt="Hexalog Logo" class="h-12 mr-2">
+        
+      </div>
+      <h1 class="text-sm font-medium text-indigo-600">Welcome To Your 6 Sided Assistant.</h1>
+      <p class="text-xs text-indigo-600">Please Login And Start Asking</p>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative" role="alert">
+        <span class="block sm:inline">{{ errorMessage }}</span>
+        <div *ngIf="isLoginDisabled" class="mt-1 text-sm">
+          Try again in {{ lockoutTimeRemaining }} seconds
+        </div>
+      </div>
+      
+      <!-- Username field -->
+      <div>
+        <label for="email" class="block text-xs font-medium text-gray-500 mb-1">Username</label>
+        <div>
+          <input 
+            id="email" 
+            type="email" 
+            formControlName="email" 
+            placeholder="Username"
+            class="w-full px-3 py-2 border border-gray-200 rounded-md bg-gray-50 focus:outline-none"
+          >
+        </div>
+      </div>
+      
+      <!-- Password field -->
+      <div>
+        <label for="password" class="block text-xs font-medium text-gray-500 mb-1">Password</label>
+        <div>
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password" 
+            placeholder="••••••••••••"
+            class="w-full px-3 py-2 border border-gray-200 rounded-md bg-gray-50 focus:outline-none"
+          >
+        </div>
+      </div>
+      
+      <!-- Submit button -->
+      <div class="pt-4">
+        <button 
+          type="submit" 
+          class="w-full py-2.5 border-0 rounded-md text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 focus:outline-none"
+          [disabled]="loginForm.invalid || isLoading || isLoginDisabled"
+          [ngClass]="{'opacity-50 cursor-not-allowed': isLoginDisabled}"
+        >
+          <span *ngIf="isLoading">Signing in...</span>
+          <span *ngIf="!isLoading">Sign In</span>
+        </button>
+      </div>
+      
+      <!-- Forgot Password link -->
+      <div class="text-center mt-2">
+        <a (click)="openForgotPasswordPopup()" class="text-xs text-gray-500 cursor-pointer">Forgot Password?</a>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Triangle image at the bottom -->
+  <div class="fixed bottom-0 left-0 right-0 w-full md:hidden">
+    <img src="assets/down.png" alt="Triangle" class="w-full h-auto object-cover" style="position: absolute; bottom: 0;">
+  </div>
+</div> 
