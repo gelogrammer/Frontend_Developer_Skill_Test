@@ -8,13 +8,14 @@ import * as TaskActions from '../../../store/task/task.actions';
 import * as TaskSelectors from '../../../store/task/task.selectors';
 import { AuthService } from '../../../services/auth.service';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
+import { TaskFormModalComponent } from '../../../shared/components/task-form-modal/task-form-modal.component';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styles: [],
   standalone: true,
-  imports: [CommonModule, RouterModule, ConfirmationModalComponent]
+  imports: [CommonModule, RouterModule, ConfirmationModalComponent, TaskFormModalComponent]
 })
 export class TaskListComponent implements OnInit {
   pendingTasks$: Observable<Task[]>;
@@ -24,8 +25,11 @@ export class TaskListComponent implements OnInit {
   // Modal properties
   isDeleteModalOpen = false;
   isCompleteModalOpen = false;
+  isTaskFormModalOpen = false;
   taskToDelete: string | null = null;
   taskToComplete: string | null = null;
+  taskToEdit: Task | null = null;
+  isEditMode = false;
   currentTaskName = '';
   
   constructor(
@@ -83,6 +87,42 @@ export class TaskListComponent implements OnInit {
   // Cancel task deletion
   cancelDelete(): void {
     this.taskToDelete = null;
+  }
+
+  // Open add task modal
+  openAddTaskModal(): void {
+    this.isTaskFormModalOpen = true;
+    this.taskToEdit = null;
+    this.isEditMode = false;
+  }
+  
+  // Open edit task modal
+  openEditTaskModal(task: Task, event: Event): void {
+    event.stopPropagation();
+    this.taskToEdit = task;
+    this.isEditMode = true;
+    this.isTaskFormModalOpen = true;
+  }
+  
+  // Save task (add or update)
+  saveTask(taskData: {title: string, description: string}): void {
+    if (this.isEditMode && this.taskToEdit) {
+      this.store.dispatch(TaskActions.updateTask({
+        id: this.taskToEdit.id,
+        updates: taskData
+      }));
+    } else {
+      this.store.dispatch(TaskActions.addTask({
+        task: taskData
+      }));
+    }
+    this.closeTaskFormModal();
+  }
+  
+  // Close task form modal
+  closeTaskFormModal(): void {
+    this.isTaskFormModalOpen = false;
+    this.taskToEdit = null;
   }
 
   logout(): void {
